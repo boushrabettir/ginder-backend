@@ -11,11 +11,15 @@ class Error:
                              return_code: int) -> None:
         print(f"Insertion request for project '{project_data["id"] | None}' 
               was unsuccessful.
-              \nRETURN CODE: '{return_code}'.")
+              \nRETURN CODE: '{return_code}'.\n")
         
     @staticmethod
     def return_type_none() -> None:
         print("Request returned type 'NONE'. Please verify query/request and try again.\n")
+
+    @staticmethod
+    def deletion_error(id: str) -> None:
+        print(f"Unable to delete project {id} from database. Please try again.\n")
         
 def fetch_user_languages(auth_token: str) -> List[str]:
     """Fetches users top languages"""

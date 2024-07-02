@@ -101,9 +101,26 @@ def update_project_data(auth_token: str) -> None:
         update_if_changed(project, project_query, "followers")
 
 
-def delete_data_list(depricated_projects) -> None:
-    """"""
+def find_depricated_projects() -> List[Dict[str, str | int]]:
+    """Returns a list of depricated projects."""
 
+    response = table(PROJECT_TABLE).select("*").execute()
+
+    # TODO- Define depricated projects. What is considered
+    # a depricated project?
+
+def delete_depricated_project_data() -> None:
+    """Deletes depricated projects from project database."""
+
+    depricated_projects = find_depricated_projects()["data"]
+
+    #response = supabase.table('countries').delete().eq('id', 1).execute()
+    for depricated_project in depricated_projects: 
+        response = table(PROJECT_TABLE).delete().eq("id", depricated_project["id"])
+
+        if response.status_code != 200:
+            raise Error().deletion_error(depricated_project["id"])
+        
 def query_project_data() -> any:
     """Queries X amount of data from project table."""
 
