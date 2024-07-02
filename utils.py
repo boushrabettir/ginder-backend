@@ -1,7 +1,22 @@
 from github import Github, Auth
-from typing import List
+from typing import List, Dict
+from dataclasses import dataclass
 
+@dataclass
+class Error:
+    """Custom error class for custom error messages."""
 
+    @staticmethod
+    def request_unsuccessful(project_data: Dict[str, str | int] | None,
+                             return_code: int) -> None:
+        print(f"Insertion request for project '{project_data["id"] | None}' 
+              was unsuccessful.
+              \nRETURN CODE: '{return_code}'.")
+        
+    @staticmethod
+    def return_type_none() -> None:
+        print("Request returned type 'NONE'. Please verify query/request and try again.\n")
+        
 def fetch_user_languages(auth_token: str) -> List[str]:
     """Fetches users top languages"""
 

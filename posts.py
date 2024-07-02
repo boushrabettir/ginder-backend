@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import List
-from github import Github, Auth
+from typing import List, Dict
+from github import Github, Auth, Set
 import random
 import requests
 import json
+from utils import Error
 
 # Holds the max amount of languages
 MAX_LANGUAGE_LENGTH = 3
@@ -124,7 +125,7 @@ def retrieve_top_repo_languages(repository) -> List[str]:
     return all_languages[:3]
 
 
-def request_github_pfp(headers: dict, username: str) -> str:
+def request_github_pfp(headers: Dict[str, any], username: str) -> str:
     """Retrieves users Github profile picture link"""
 
     response = requests.get(f"https://api.github.com/users/{username}", headers=headers)
@@ -136,9 +137,27 @@ def request_github_pfp(headers: dict, username: str) -> str:
     except ValueError as e:
         return json({"error": f"Invalid response, please try again. {e}"}), 500
 
+def query_project(id: str, auth_token: str) -> any:
+    """Queries a specific project given their id."""
+
+    headers= {
+        "Authorization": f"Bearer {auth_token}"
+    }
+
+    response = requests.get(f"https://api.github.com/repos/{id}", headers=headers)
+
+    if not response or type(response) == None:
+        raise Error().return_type_none()
+
+    try:
+        json_response = response.json()
+
+        return json_response
+    except ValueError as e:
+        return json({"error": f"Invalid response, please try again. {e}"}), 500
 
 def request_github_projects(
-    user_languages: List[str], auth_token: str, all_swipes: set
+    user_languages: List[str], auth_token: str, all_swipes: Set[bool]
 ) -> List[OpenSource]:
     """Requests Github Repository information"""
 
